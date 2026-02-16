@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flow — Creator Intake Form</title>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --color-bg: #f8f8f8;
+      --color-surface: #ffffff;
+      --color-primary: #111111;
+      --color-primary-hover: #333333;
+      --color-accent: #4f46e5;
+      --color-accent-light: #eef2ff;
+      --color-border: #d1d5db;
+      --color-border-focus: #4f46e5;
+      --color-text: #111827;
+      --color-text-secondary: #6b7280;
+      --color-error: #dc2626;
+      --color-error-bg: #fef2f2;
+      --radius: 8px;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    .form-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .form-header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .form-header p {
+      color: var(--color-text-secondary);
+      font-size: 1rem;
+    }
+
+    .section {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .section-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .section-subtitle {
+      font-size: 0.875rem;
+      color: var(--color-text-secondary);
+      margin-bottom: 24px;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 560px) {
+      .field-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .field {
+      margin-bottom: 20px;
+    }
+
+    .field:last-child {
+      margin-bottom: 0;
+    }
+
+    label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+
+    label .required {
+      color: var(--color-error);
+      margin-left: 2px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="url"],
+    input[type="date"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 0.9375rem;
+      font-family: inherit;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      background: var(--color-surface);
+      color: var(--color-text);
+      transition: border-color 0.15s, box-shadow 0.15s;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--color-border-focus);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+
+    input.invalid,
+    select.invalid,
+    textarea.invalid {
+      border-color: var(--color-error);
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .hint {
+      font-size: 0.8125rem;
+      color: var(--color-text-secondary);
+      margin-top: 4px;
+    }
+
+    .error-msg {
+      font-size: 0.8125rem;
+      color: var(--color-error);
+      margin-top: 4px;
+      display: none;
+    }
+
+    .error-msg.visible {
+      display: block;
+    }
+
+    /* Multi-select chips */
+    .chip-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip-group input[type="checkbox"] {
+      display: none;
+    }
+
+    .chip-group label.chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 16px;
+      font-size: 0.875rem;
+      font-weight: 400;
+      border: 1px solid var(--color-border);
+      border-radius: 100px;
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+    }
+
+    .chip-group label.chip:hover {
+      border-color: var(--color-accent);
+      background: var(--color-accent-light);
+    }
+
+    .chip-group input[type="checkbox"]:checked + label.chip {
+      background: var(--color-accent);
+      color: #fff;
+      border-color: var(--color-accent);
+    }
+
+    /* Specify input for "Community" */
+    .specify-input {
+      margin-top: 8px;
+      display: none;
+    }
+
+    .specify-input.visible {
+      display: block;
+    }
+
+    /* File upload */
+    .upload-area {
+      border: 2px dashed var(--color-border);
+      border-radius: var(--radius);
+      padding: 32px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      position: relative;
+    }
+
+    .upload-area:hover,
+    .upload-area.dragover {
+      border-color: var(--color-accent);
+      background: var(--color-accent-light);
+    }
+
+    .upload-area input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .upload-area .upload-icon {
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+      color: var(--color-text-secondary);
+    }
+
+    .upload-area .upload-text {
+      font-size: 0.9375rem;
+      color: var(--color-text-secondary);
+    }
+
+    .upload-area .upload-text strong {
+      color: var(--color-accent);
+    }
+
+    .file-list {
+      margin-top: 8px;
+    }
+
+    .file-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--color-accent-light);
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      margin-top: 6px;
+    }
+
+    .file-item .file-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 80%;
+    }
+
+    .file-item .remove-file {
+      background: none;
+      border: none;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      font-size: 1.125rem;
+      padding: 0 4px;
+      line-height: 1;
+    }
+
+    .file-item .remove-file:hover {
+      color: var(--color-error);
+    }
+
+    /* Submit */
+    .submit-section {
+      text-align: center;
+    }
+
+    .btn-submit {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 48px;
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: inherit;
+      color: #fff;
+      background: var(--color-primary);
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-submit:hover {
+      background: var(--color-primary-hover);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 80px 24px;
+    }
+
+    .form-success.visible {
+      display: block;
+    }
+
+    .form-success .checkmark {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 24px;
+      background: #10b981;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .form-success .checkmark svg {
+      width: 32px;
+      height: 32px;
+      stroke: #fff;
+      stroke-width: 3;
+      fill: none;
+    }
+
+    .form-success h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .form-success p {
+      color: var(--color-text-secondary);
+    }
+
+    .form-wrapper.hidden {
+      display: none;
+    }
+
+    /* Global validation banner */
+    .validation-banner {
+      display: none;
+      background: var(--color-error-bg);
+      border: 1px solid var(--color-error);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      margin-bottom: 24px;
+      font-size: 0.875rem;
+      color: var(--color-error);
+    }
+
+    .validation-banner.visible {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="form-header">
+      <h1>Flow Creator Intake</h1>
+      <p>Tell us about yourself and your content. All fields marked <span style="color:var(--color-error);">*</span> are required.</p>
+    </div>
+
+    <div class="validation-banner" id="validationBanner">
+      Please fill out all required fields before submitting.
+    </div>
+
+    <form id="intakeForm" class="form-wrapper" novalidate>
+
+      <!-- Section 1: Personal Information -->
+      <div class="section">
+        <h2 class="section-title">Personal Information</h2>
+        <p class="section-subtitle">Basic details so we can get in touch.</p>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="firstName">First Name <span class="required">*</span></label>
+            <input type="text" id="firstName" name="firstName" required>
+            <div class="error-msg" id="firstNameError">First name is required.</div>
+          </div>
+          <div class="field">
+            <label for="lastName">Last Name <span class="required">*</span></label>
+            <input type="text" id="lastName" name="lastName" required>
+            <div class="error-msg" id="lastNameError">Last name is required.</div>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="email">Email <span class="required">*</span></label>
+            <input type="email" id="email" name="email" required>
+            <div class="error-msg" id="emailError">Please enter a valid email.</div>
+          </div>
+          <div class="field">
+            <label for="cell">Cell <span class="required">*</span></label>
+            <input type="tel" id="cell" name="cell" placeholder="(555) 123-4567" required>
+            <div class="error-msg" id="cellError">Cell number is required.</div>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="zipCode">Current Zip Code <span class="required">*</span></label>
+            <input type="text" id="zipCode" name="zipCode" maxlength="10" required>
+            <div class="error-msg" id="zipCodeError">Zip code is required.</div>
+          </div>
+          <div class="field">
+            <label for="desiredTimeframe">Desired Time-frame <span class="required">*</span></label>
+            <select id="desiredTimeframe" name="desiredTimeframe" required>
+              <option value="" disabled selected>Select a time-frame</option>
+              <option value="weekend">Weekend</option>
+              <option value="week">Week</option>
+              <option value="2weeks">2 Weeks</option>
+              <option value="1month">1 Month</option>
+              <option value="1month+">1 Month+</option>
+              <option value="yearlease">Year Lease</option>
+            </select>
+            <div class="error-msg" id="desiredTimeframeError">Please select a time-frame.</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="desiredDates">Desired Dates <span class="required">*</span></label>
+          <input type="text" id="desiredDates" name="desiredDates" placeholder="e.g. March 1 – March 15, 2026" required>
+          <div class="error-msg" id="desiredDatesError">Desired dates are required.</div>
+        </div>
+      </div>
+
+      <!-- Section 2: Manager Information (Optional) -->
+      <div class="section">
+        <h2 class="section-title">Manager Information</h2>
+        <p class="section-subtitle">Optional — fill this out if you have management representation.</p>
+
+        <div class="field">
+          <label for="managerName">Manager's Name</label>
+          <input type="text" id="managerName" name="managerName">
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="managerEmail">Manager's Email</label>
+            <input type="email" id="managerEmail" name="managerEmail">
+          </div>
+          <div class="field">
+            <label for="managerCell">Manager's Cell</label>
+            <input type="tel" id="managerCell" name="managerCell" placeholder="(555) 123-4567">
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: Social Media -->
+      <div class="section">
+        <h2 class="section-title">Social Media</h2>
+        <p class="section-subtitle">Optional — share your social handles so we can check out your content.</p>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="instagram">Instagram Handle</label>
+            <input type="text" id="instagram" name="instagram" placeholder="@yourhandle">
+          </div>
+          <div class="field">
+            <label for="tiktok">TikTok Handle</label>
+            <input type="text" id="tiktok" name="tiktok" placeholder="@yourhandle">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="youtube">YouTube Handle</label>
+            <input type="text" id="youtube" name="youtube" placeholder="@yourchannel">
+          </div>
+          <div class="field">
+            <label for="xHandle">X Handle</label>
+            <input type="text" id="xHandle" name="xHandle" placeholder="@yourhandle">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="blogLink">Blog Link</label>
+          <input type="url" id="blogLink" name="blogLink" placeholder="https://yourblog.com">
+        </div>
+      </div>
+
+      <!-- Section 4: Creator Profile -->
+      <div class="section">
+        <h2 class="section-title">Creator Profile</h2>
+        <p class="section-subtitle">Help us understand your content and strengths.</p>
+
+        <!-- Strongest platforms -->
+        <div class="field">
+          <label>Which platforms are you strongest on? <span class="required">*</span></label>
+          <div class="hint" style="margin-bottom:8px;">Select all that apply.</div>
+          <div class="chip-group" id="platformsGroup">
+            <input type="checkbox" id="plat_instagram" name="platforms" value="Instagram">
+            <label for="plat_instagram" class="chip">Instagram</label>
+
+            <input type="checkbox" id="plat_tiktok" name="platforms" value="TikTok">
+            <label for="plat_tiktok" class="chip">TikTok</label>
+
+            <input type="checkbox" id="plat_youtube" name="platforms" value="YouTube">
+            <label for="plat_youtube" class="chip">YouTube</label>
+
+            <input type="checkbox" id="plat_x" name="platforms" value="X">
+            <label for="plat_x" class="chip">X</label>
+
+            <input type="checkbox" id="plat_blog" name="platforms" value="Blog/Other">
+            <label for="plat_blog" class="chip">Blog/Other</label>
+
+            <input type="checkbox" id="plat_inperson" name="platforms" value="In-person events">
+            <label for="plat_inperson" class="chip">In-person events</label>
+          </div>
+          <div class="error-msg" id="platformsError">Please select at least one platform.</div>
+        </div>
+
+        <!-- Content formats -->
+        <div class="field">
+          <label>What type of formats are you best at? <span class="required">*</span></label>
+          <div class="hint" style="margin-bottom:8px;">Select all that apply.</div>
+          <div class="chip-group" id="formatsGroup">
+            <input type="checkbox" id="fmt_broll" name="formats" value="B-roll & voice-over">
+            <label for="fmt_broll" class="chip">B-roll & voice-over</label>
+
+            <input type="checkbox" id="fmt_talking" name="formats" value="Talking head">
+            <label for="fmt_talking" class="chip">Talking head</label>
+
+            <input type="checkbox" id="fmt_skit" name="formats" value="Skit/Sketch">
+            <label for="fmt_skit" class="chip">Skit / Sketch</label>
+
+            <input type="checkbox" id="fmt_vlog" name="formats" value="Vlog">
+            <label for="fmt_vlog" class="chip">Vlog</label>
+
+            <input type="checkbox" id="fmt_tutorial" name="formats" value="Tutorial/How-to">
+            <label for="fmt_tutorial" class="chip">Tutorial / How-to</label>
+
+            <input type="checkbox" id="fmt_interview" name="formats" value="Interview">
+            <label for="fmt_interview" class="chip">Interview</label>
+
+            <input type="checkbox" id="fmt_unboxing" name="formats" value="Unboxing/Review">
+            <label for="fmt_unboxing" class="chip">Unboxing / Review</label>
+
+            <input type="checkbox" id="fmt_grwm" name="formats" value="GRWM">
+            <label for="fmt_grwm" class="chip">GRWM</label>
+
+            <input type="checkbox" id="fmt_ditl" name="formats" value="Day-in-the-life">
+            <label for="fmt_ditl" class="chip">Day-in-the-life</label>
+          </div>
+          <div class="error-msg" id="formatsError">Please select at least one format.</div>
+        </div>
+
+        <!-- Genre -->
+        <div class="field">
+          <label>What genre do you classify yourself as? <span class="required">*</span></label>
+          <div class="hint" style="margin-bottom:8px;">Select all that apply.</div>
+          <div class="chip-group" id="genreGroup">
+            <input type="checkbox" id="genre_comedy" name="genre" value="Comedy">
+            <label for="genre_comedy" class="chip">Comedy</label>
+
+            <input type="checkbox" id="genre_lifestyle" name="genre" value="Lifestyle">
+            <label for="genre_lifestyle" class="chip">Lifestyle</label>
+
+            <input type="checkbox" id="genre_wellness" name="genre" value="Wellness">
+            <label for="genre_wellness" class="chip">Wellness</label>
+
+            <input type="checkbox" id="genre_community" name="genre" value="Community">
+            <label for="genre_community" class="chip">Community</label>
+
+            <input type="checkbox" id="genre_beauty" name="genre" value="Beauty">
+            <label for="genre_beauty" class="chip">Beauty</label>
+
+            <input type="checkbox" id="genre_sports" name="genre" value="Sports">
+            <label for="genre_sports" class="chip">Sports</label>
+
+            <input type="checkbox" id="genre_fitness" name="genre" value="Fitness">
+            <label for="genre_fitness" class="chip">Fitness</label>
+
+            <input type="checkbox" id="genre_family" name="genre" value="Family">
+            <label for="genre_family" class="chip">Family</label>
+
+            <input type="checkbox" id="genre_travel" name="genre" value="Travel">
+            <label for="genre_travel" class="chip">Travel</label>
+
+            <input type="checkbox" id="genre_popculture" name="genre" value="Pop culture">
+            <label for="genre_popculture" class="chip">Pop culture</label>
+
+            <input type="checkbox" id="genre_food" name="genre" value="Food">
+            <label for="genre_food" class="chip">Food</label>
+          </div>
+          <div class="specify-input" id="communitySpecify">
+            <label for="communityDetail">Please specify which community:</label>
+            <input type="text" id="communityDetail" name="communityDetail" placeholder="e.g. LGBTQ+, Latina, AAPI, etc.">
+          </div>
+          <div class="error-msg" id="genreError">Please select at least one genre.</div>
+        </div>
+
+        <!-- Audience description -->
+        <div class="field">
+          <label for="audienceDescription">Describe your audience <span class="required">*</span></label>
+          <div class="hint" style="margin-bottom:6px;">Who they are, what they look like, what they respond well to.</div>
+          <textarea id="audienceDescription" name="audienceDescription" rows="4" required></textarea>
+          <div class="error-msg" id="audienceDescriptionError">Please describe your audience.</div>
+        </div>
+
+        <!-- Why Flow -->
+        <div class="field">
+          <label for="whyFlow">Why do you want to work with Flow? <span class="required">*</span></label>
+          <textarea id="whyFlow" name="whyFlow" rows="4" required></textarea>
+          <div class="error-msg" id="whyFlowError">Please tell us why you want to work with Flow.</div>
+        </div>
+      </div>
+
+      <!-- Section 5: Performance Uploads -->
+      <div class="section">
+        <h2 class="section-title">Performance Data</h2>
+        <p class="section-subtitle">Upload screenshots or exports of your analytics from the last 30 days.</p>
+
+        <div class="field">
+          <label>Last 30 days — Platform Performance <span class="required">*</span></label>
+          <div class="hint" style="margin-bottom:8px;">Impressions &amp; reach for Instagram/Meta, TikTok, and/or YouTube. Screenshots or PDF exports accepted.</div>
+          <div class="upload-area" id="performanceUploadArea">
+            <input type="file" id="performanceFiles" name="performanceFiles" multiple accept="image/*,.pdf,.csv,.xlsx">
+            <div class="upload-icon">&#8686;</div>
+            <div class="upload-text"><strong>Click to upload</strong> or drag and drop<br>PNG, JPG, PDF, CSV, or XLSX</div>
+          </div>
+          <div class="file-list" id="performanceFileList"></div>
+          <div class="error-msg" id="performanceFilesError">Please upload at least one performance file.</div>
+        </div>
+
+        <div class="field">
+          <label>Last 30 days — Audience Breakdown <span class="required">*</span></label>
+          <div class="hint" style="margin-bottom:8px;">Male/female split, age ranges, and top locations for the platforms above.</div>
+          <div class="upload-area" id="audienceUploadArea">
+            <input type="file" id="audienceFiles" name="audienceFiles" multiple accept="image/*,.pdf,.csv,.xlsx">
+            <div class="upload-icon">&#8686;</div>
+            <div class="upload-text"><strong>Click to upload</strong> or drag and drop<br>PNG, JPG, PDF, CSV, or XLSX</div>
+          </div>
+          <div class="file-list" id="audienceFileList"></div>
+          <div class="error-msg" id="audienceFilesError">Please upload at least one audience breakdown file.</div>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div class="submit-section">
+        <button type="submit" class="btn-submit" id="submitBtn">Submit Application</button>
+      </div>
+    </form>
+
+    <!-- Success state -->
+    <div class="form-success" id="formSuccess">
+      <div class="checkmark">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </div>
+      <h2>Application Submitted</h2>
+      <p>Thanks for your interest in working with Flow! We'll review your application and get back to you soon.</p>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      // ── File upload state ──
+      const fileState = {
+        performance: [],
+        audience: []
+      };
+
+      // ── Community "specify" toggle ──
+      const communityCheckbox = document.getElementById('genre_community');
+      const communitySpecify = document.getElementById('communitySpecify');
+
+      communityCheckbox.addEventListener('change', function () {
+        communitySpecify.classList.toggle('visible', this.checked);
+      });
+
+      // ── Drag-and-drop helpers ──
+      function setupUpload(areaId, inputId, listId, stateKey) {
+        const area = document.getElementById(areaId);
+        const input = document.getElementById(inputId);
+        const list = document.getElementById(listId);
+
+        ['dragenter', 'dragover'].forEach(evt => {
+          area.addEventListener(evt, function (e) {
+            e.preventDefault();
+            area.classList.add('dragover');
+          });
+        });
+
+        ['dragleave', 'drop'].forEach(evt => {
+          area.addEventListener(evt, function (e) {
+            e.preventDefault();
+            area.classList.remove('dragover');
+          });
+        });
+
+        area.addEventListener('drop', function (e) {
+          const files = Array.from(e.dataTransfer.files);
+          addFiles(files, stateKey, list);
+        });
+
+        input.addEventListener('change', function () {
+          const files = Array.from(this.files);
+          addFiles(files, stateKey, list);
+          this.value = '';
+        });
+      }
+
+      function addFiles(newFiles, stateKey, listEl) {
+        newFiles.forEach(function (file) {
+          fileState[stateKey].push(file);
+        });
+        renderFileList(stateKey, listEl);
+      }
+
+      function renderFileList(stateKey, listEl) {
+        listEl.innerHTML = '';
+        fileState[stateKey].forEach(function (file, idx) {
+          const item = document.createElement('div');
+          item.className = 'file-item';
+          item.innerHTML =
+            '<span class="file-name">' + escapeHtml(file.name) + '</span>' +
+            '<button type="button" class="remove-file" data-key="' + stateKey + '" data-idx="' + idx + '" title="Remove">&times;</button>';
+          listEl.appendChild(item);
+        });
+      }
+
+      document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('remove-file')) {
+          var key = e.target.getAttribute('data-key');
+          var idx = parseInt(e.target.getAttribute('data-idx'), 10);
+          fileState[key].splice(idx, 1);
+          var listEl = key === 'performance'
+            ? document.getElementById('performanceFileList')
+            : document.getElementById('audienceFileList');
+          renderFileList(key, listEl);
+        }
+      });
+
+      setupUpload('performanceUploadArea', 'performanceFiles', 'performanceFileList', 'performance');
+      setupUpload('audienceUploadArea', 'audienceFiles', 'audienceFileList', 'audience');
+
+      // ── Validation ──
+      function escapeHtml(str) {
+        var div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+      }
+
+      function showError(id) {
+        var el = document.getElementById(id);
+        if (el) el.classList.add('visible');
+      }
+
+      function hideError(id) {
+        var el = document.getElementById(id);
+        if (el) el.classList.remove('visible');
+      }
+
+      function markInvalid(el) {
+        el.classList.add('invalid');
+      }
+
+      function clearInvalid(el) {
+        el.classList.remove('invalid');
+      }
+
+      function validateChipGroup(groupId, errorId) {
+        var checked = document.querySelectorAll('#' + groupId + ' input[type="checkbox"]:checked');
+        if (checked.length === 0) {
+          showError(errorId);
+          return false;
+        }
+        hideError(errorId);
+        return true;
+      }
+
+      function validateField(id, errorId) {
+        var el = document.getElementById(id);
+        var val = el.value.trim();
+        var valid = true;
+
+        if (el.type === 'email') {
+          valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+        } else if (el.tagName === 'SELECT') {
+          valid = val !== '';
+        } else {
+          valid = val !== '';
+        }
+
+        if (!valid) {
+          markInvalid(el);
+          showError(errorId);
+        } else {
+          clearInvalid(el);
+          hideError(errorId);
+        }
+        return valid;
+      }
+
+      // ── Form submit ──
+      var form = document.getElementById('intakeForm');
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        var isValid = true;
+        var banner = document.getElementById('validationBanner');
+        banner.classList.remove('visible');
+
+        // Clear all previous errors
+        document.querySelectorAll('.error-msg').forEach(function (el) {
+          el.classList.remove('visible');
+        });
+        document.querySelectorAll('.invalid').forEach(function (el) {
+          el.classList.remove('invalid');
+        });
+
+        // Required text/select fields
+        var requiredFields = [
+          ['firstName', 'firstNameError'],
+          ['lastName', 'lastNameError'],
+          ['email', 'emailError'],
+          ['cell', 'cellError'],
+          ['zipCode', 'zipCodeError'],
+          ['desiredDates', 'desiredDatesError'],
+          ['desiredTimeframe', 'desiredTimeframeError'],
+          ['audienceDescription', 'audienceDescriptionError'],
+          ['whyFlow', 'whyFlowError']
+        ];
+
+        requiredFields.forEach(function (pair) {
+          if (!validateField(pair[0], pair[1])) isValid = false;
+        });
+
+        // Multi-select groups
+        if (!validateChipGroup('platformsGroup', 'platformsError')) isValid = false;
+        if (!validateChipGroup('formatsGroup', 'formatsError')) isValid = false;
+        if (!validateChipGroup('genreGroup', 'genreError')) isValid = false;
+
+        // File uploads
+        if (fileState.performance.length === 0) {
+          showError('performanceFilesError');
+          isValid = false;
+        }
+        if (fileState.audience.length === 0) {
+          showError('audienceFilesError');
+          isValid = false;
+        }
+
+        if (!isValid) {
+          banner.classList.add('visible');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          return;
+        }
+
+        // ── Build FormData (ready to POST to your backend) ──
+        var fd = new FormData(form);
+
+        // Append multi-select values
+        var platforms = [];
+        document.querySelectorAll('#platformsGroup input:checked').forEach(function (cb) {
+          platforms.push(cb.value);
+        });
+        fd.set('platforms', JSON.stringify(platforms));
+
+        var formats = [];
+        document.querySelectorAll('#formatsGroup input:checked').forEach(function (cb) {
+          formats.push(cb.value);
+        });
+        fd.set('formats', JSON.stringify(formats));
+
+        var genres = [];
+        document.querySelectorAll('#genreGroup input:checked').forEach(function (cb) {
+          genres.push(cb.value);
+        });
+        fd.set('genre', JSON.stringify(genres));
+
+        // Append files
+        fileState.performance.forEach(function (file) {
+          fd.append('performanceFiles', file);
+        });
+        fileState.audience.forEach(function (file) {
+          fd.append('audienceFiles', file);
+        });
+
+        // ── TODO: Replace this with your actual endpoint ──
+        // Example:
+        // fetch('https://your-api.example.com/intake', {
+        //   method: 'POST',
+        //   body: fd
+        // })
+        // .then(function(res) { return res.json(); })
+        // .then(function(data) { showSuccess(); })
+        // .catch(function(err) { alert('Something went wrong. Please try again.'); });
+
+        // For now, just show success
+        showSuccess();
+      });
+
+      function showSuccess() {
+        form.classList.add('hidden');
+        document.getElementById('validationBanner').classList.remove('visible');
+        document.getElementById('formSuccess').classList.add('visible');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    })();
+  </script>
+</body>
+</html>
