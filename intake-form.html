@@ -14,20 +14,29 @@
     }
 
     :root {
-      --color-bg: #f8f8f8;
+      /* Flow brand palette */
+      --flow-moonlight: #F3EDDF;
+      --flow-midnight: #3D3D3D;
+      --flow-ocean: #7DADBB;
+      --flow-olive: #767317;
+      --flow-sunlight: #E89700;
+      --flow-roots: #8C4500;
+      --flow-heart: #F99AA9;
+
+      --color-bg: var(--flow-moonlight);
       --color-surface: #ffffff;
-      --color-primary: #111111;
-      --color-primary-hover: #333333;
-      --color-accent: #4f46e5;
-      --color-accent-light: #eef2ff;
-      --color-border: #d1d5db;
-      --color-border-focus: #4f46e5;
-      --color-text: #111827;
-      --color-text-secondary: #6b7280;
-      --color-error: #dc2626;
-      --color-error-bg: #fef2f2;
+      --color-primary: var(--flow-sunlight);
+      --color-primary-hover: var(--flow-roots);
+      --color-accent: var(--flow-ocean);
+      --color-accent-light: #e4f0f4;
+      --color-border: #c8c3b5;
+      --color-border-focus: var(--flow-ocean);
+      --color-text: var(--flow-midnight);
+      --color-text-secondary: #6b6862;
+      --color-error: #c0365e;
+      --color-error-bg: #fdf0f3;
       --radius: 8px;
-      --shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+      --shadow: 0 1px 3px rgba(61, 61, 61, 0.08), 0 1px 2px rgba(61, 61, 61, 0.06);
     }
 
     body {
@@ -333,7 +342,7 @@
       width: 64px;
       height: 64px;
       margin: 0 auto 24px;
-      background: #10b981;
+      background: var(--flow-olive);
       border-radius: 50%;
       display: flex;
       align-items: center;
