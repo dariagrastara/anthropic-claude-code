@@ -445,9 +445,18 @@
         </div>
 
         <div class="field">
-          <label for="desiredDates">Desired Dates <span class="required">*</span></label>
-          <input type="text" id="desiredDates" name="desiredDates" placeholder="e.g. March 1 – March 15, 2026" required>
-          <div class="error-msg" id="desiredDatesError">Desired dates are required.</div>
+          <label>Desired Dates <span class="required">*</span></label>
+          <div class="field-row" style="margin-bottom:0;">
+            <div>
+              <label for="desiredDateStart" style="font-weight:400;color:var(--color-text-secondary);">Start date</label>
+              <input type="date" id="desiredDateStart" name="desiredDateStart" required>
+            </div>
+            <div>
+              <label for="desiredDateEnd" style="font-weight:400;color:var(--color-text-secondary);">End date</label>
+              <input type="date" id="desiredDateEnd" name="desiredDateEnd" required>
+            </div>
+          </div>
+          <div class="error-msg" id="desiredDatesError">Please select both a start and end date.</div>
         </div>
       </div>
 
@@ -697,6 +706,16 @@
         communitySpecify.classList.toggle('visible', this.checked);
       });
 
+      // ── Date range: set min on end date when start changes ──
+      var dateStart = document.getElementById('desiredDateStart');
+      var dateEnd = document.getElementById('desiredDateEnd');
+      dateStart.addEventListener('change', function () {
+        dateEnd.min = this.value;
+        if (dateEnd.value && dateEnd.value < this.value) {
+          dateEnd.value = '';
+        }
+      });
+
       // ── Drag-and-drop helpers ──
       function setupUpload(areaId, inputId, listId, stateKey) {
         const area = document.getElementById(areaId);
@@ -846,7 +865,8 @@
           ['email', 'emailError'],
           ['cell', 'cellError'],
           ['zipCode', 'zipCodeError'],
-          ['desiredDates', 'desiredDatesError'],
+          ['desiredDateStart', 'desiredDatesError'],
+          ['desiredDateEnd', 'desiredDatesError'],
           ['desiredTimeframe', 'desiredTimeframeError'],
           ['audienceDescription', 'audienceDescriptionError'],
           ['whyFlow', 'whyFlowError']
@@ -855,6 +875,17 @@
         requiredFields.forEach(function (pair) {
           if (!validateField(pair[0], pair[1])) isValid = false;
         });
+
+        // Date range: end must be on or after start
+        var startEl = document.getElementById('desiredDateStart');
+        var endEl = document.getElementById('desiredDateEnd');
+        if (startEl.value && endEl.value && endEl.value < startEl.value) {
+          markInvalid(endEl);
+          var dErr = document.getElementById('desiredDatesError');
+          dErr.textContent = 'End date cannot be before start date.';
+          dErr.classList.add('visible');
+          isValid = false;
+        }
 
         // Multi-select groups
         if (!validateChipGroup('platformsGroup', 'platformsError')) isValid = false;
