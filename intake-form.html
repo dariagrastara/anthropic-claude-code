@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Flow — Creator Intake Form</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
   <style>
     *,
     *::before,
@@ -56,6 +59,38 @@
     .form-header {
       text-align: center;
       margin-bottom: 48px;
+    }
+
+    /* Flow logo with faded wings */
+    .logo-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .logo-wing {
+      flex: 1;
+      height: 3px;
+      max-width: 120px;
+      border-radius: 2px;
+    }
+
+    .logo-wing--left {
+      background: linear-gradient(to right, transparent, var(--flow-midnight));
+    }
+
+    .logo-wing--right {
+      background: linear-gradient(to left, transparent, var(--flow-midnight));
+    }
+
+    .logo-text {
+      font-family: 'Pacifico', cursive;
+      font-size: 3.5rem;
+      color: var(--flow-midnight);
+      line-height: 1;
+      padding: 0 12px;
+      font-weight: 400;
     }
 
     .form-header h1 {
@@ -391,7 +426,12 @@
 <body>
   <div class="container">
     <div class="form-header">
-      <h1>Flow Creator Intake</h1>
+      <div class="logo-wrapper">
+        <div class="logo-wing logo-wing--left"></div>
+        <div class="logo-text">flow</div>
+        <div class="logo-wing logo-wing--right"></div>
+      </div>
+      <h1>Creator Intake</h1>
       <p>Tell us about yourself and your content. All fields marked <span style="color:var(--color-error);">*</span> are required.</p>
     </div>
 
